@@ -1,14 +1,12 @@
 # Módulo Grupo de Segurança AWS (aws-terraform-sg)
 
-Este módulo do Terraform permite criar um Security Group na AWS com regras de ingress personalizadas. Ele foi desenvolvido para facilitar a criação e gerenciamento de grupos de segurança em sua infraestrutura.
+Este módulo do Terraform permite criar um Security Group na AWS com regras de ingress personalizadas. Ele foi desenvolvido para facilitar o uso na criação e gerenciamento de grupos de segurança.
 
 # Uso
 Para usar este módulo, adicione o seguinte código em seu arquivo Terraform:
 
-```
-hcl
-Copy code
-'module "security_group" {
+```terraform
+module "security_group" {
   source  = "./aws-terraform-sg/"
   name    = "Rendafixa"
   vpc_id  = "vpc-0e66de74"

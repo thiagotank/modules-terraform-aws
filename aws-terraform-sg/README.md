@@ -47,10 +47,10 @@ module "security_group" {
 # Variáveis
 | Nome | Descrição	            | Tipo	| Obrigatório |
 |------|------------------------|-------|-------------| 
-| name | Nome do Security Group |	string |	sim |
-| vpc_id|	ID da VPC onde o Security Group será criado |string|	sim|
-|product|	Nome do produto associado ao Security Group |	string| sim|
-|common_tags|	Tags comuns que serão aplicadas a todos os recursos.|	map(string)|	não|
-ingress_rules|	Lista de regras de ingress personalizadas para o SG.	|list(object)|	não|
+| `name` | Nome do Security Group |	string |	sim |
+| `vpc_id`|	ID da VPC onde o Security Group será criado |string|	sim|
+|`product`|	Nome do produto associado ao Security Group |	string| sim|
+|`common_tags`|	Tags comuns que serão aplicadas a todos os recursos.|	map(string)|	não|
+`ingress_rules`|	Lista de regras de ingress personalizadas para o SG.	|list(object)|	não|
 
 

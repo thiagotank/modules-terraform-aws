@@ -1,6 +1,21 @@
-# variables.tf
-
 variable "name" {
+  description = "Name tag for the security group."
+  type        = string
+}
+
+variable "cost_center" {
+  description = "Name tag for the security group."
+  type        = string
+  default     = "CC-SSD"
+}
+
+variable "bs" {
+  description = "Name tag for the security group."
+  type        = string
+  default     = "PGX_SUPERDIGITAL"
+}
+
+variable "product" {
   description = "Name tag for the security group."
   type        = string
 }
@@ -9,6 +24,12 @@ variable "vpc_id" {
   description = "VPC ID where the security group will be created."
   type        = string
 
+}
+
+variable "common_tags" {
+  description = "Common tags to be applied to the security group."
+  type        = map(string)
+  default     = {}
 }
 
 variable "ingress_rules" {
@@ -20,10 +41,4 @@ variable "ingress_rules" {
     cidr_blocks = list(string)
     description = string
   }))
-}
-
-variable "tags" {
-  description = "Map of tags to be attached to the security group."
-  type        = map(string)
-  default     = {}
 }

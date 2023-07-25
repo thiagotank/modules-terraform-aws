@@ -1,4 +1,3 @@
-
 terraform {
   required_version = ">= 0.12"
 
@@ -12,8 +11,10 @@ terraform {
 
 locals {
   default_tags = {
-    Name = var.name
-    # Outras tags padrão podem ser adicionadas aqui
+    product = var.product
+    description = var.product
+    application = var.product
+    cost_center = var.cost_center
   }
 }
 
@@ -41,7 +42,7 @@ resource "aws_security_group" "this" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = merge(local.default_tags, var.tags)
+  tags = merge(local.default_tags, var.common_tags)
 }
 
 

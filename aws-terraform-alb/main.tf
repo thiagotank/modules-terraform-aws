@@ -9,16 +9,23 @@ terraform {
   }
 }
 
+
 locals {
-  create_lb = var.create_lb && var.putin_khuylo
+  create_lb = var.create_lb 
+    default_tags = {
+    product = var.product
+    description = var.product
+    application = var.product
+    cost_center = var.cost_center
+  }
 }
 
+################################################################################
+# Application LoadBalancer
+################################################################################
 resource "aws_lb" "this" {
   count = local.create_lb ? 1 : 0
-
   name        = var.name
-  name_prefix = var.name_prefix
-
   load_balancer_type = var.load_balancer_type
   internal           = var.internal
   security_groups    = var.security_groups
@@ -61,10 +68,12 @@ resource "aws_lb" "this" {
 
   tags = merge(
     {
-      Name = (var.name != null) ? var.name : var.name_prefix
+      Name = var.name, 
     },
     var.tags,
     var.lb_tags,
+    local.default_tags,
+    var.common_tags,
   )
 
   timeouts {
@@ -79,6 +88,7 @@ resource "aws_lb_target_group" "main" {
 
   name        = lookup(var.target_groups[count.index], "name", null)
   name_prefix = lookup(var.target_groups[count.index], "name_prefix", null)
+  # name          = var.name
 
   vpc_id           = var.vpc_id
   port             = try(var.target_groups[count.index].backend_port, null)
@@ -126,6 +136,8 @@ resource "aws_lb_target_group" "main" {
   tags = merge(
     var.tags,
     var.target_group_tags,
+    local.default_tags,
+    var.common_tags,
     lookup(var.target_groups[count.index], "tags", {}),
     {
       "Name" = try(var.target_groups[count.index].name, var.target_groups[count.index].name_prefix, "")
@@ -348,6 +360,7 @@ resource "aws_lb_listener_rule" "https_listener_rule" {
   tags = merge(
     var.tags,
     var.https_listener_rules_tags,
+    var.common_tags,
     lookup(var.https_listener_rules[count.index], "tags", {}),
   )
 }
@@ -544,6 +557,8 @@ resource "aws_lb_listener_rule" "http_tcp_listener_rule" {
 
   tags = merge(
     var.tags,
+    local.default_tags,
+    var.common_tags,
     var.http_tcp_listener_rules_tags,
     lookup(var.http_tcp_listener_rules[count.index], "tags", {}),
   )
@@ -560,7 +575,7 @@ resource "aws_lb_listener" "frontend_http_tcp" {
   dynamic "default_action" {
     for_each = length(keys(var.http_tcp_listeners[count.index])) == 0 ? [] : [var.http_tcp_listeners[count.index]]
 
-    # Defaults to forward action if action_type not specified
+    # O padrão é encaminhar ação se action_type não for especificado
     content {
       type             = lookup(default_action.value, "action_type", "forward")
       target_group_arn = contains([null, "", "forward"], lookup(default_action.value, "action_type", "")) ? aws_lb_target_group.main[lookup(default_action.value, "target_group_index", count.index)].id : null
@@ -616,6 +631,8 @@ resource "aws_lb_listener" "frontend_http_tcp" {
 
   tags = merge(
     var.tags,
+    local.default_tags,
+    var.common_tags,
     var.http_tcp_listeners_tags,
     lookup(var.http_tcp_listeners[count.index], "tags", {}),
   )
@@ -635,7 +652,7 @@ resource "aws_lb_listener" "frontend_https" {
   dynamic "default_action" {
     for_each = length(keys(var.https_listeners[count.index])) == 0 ? [] : [var.https_listeners[count.index]]
 
-    # Defaults to forward action if action_type not specified
+    # O padrão é encaminhar ação se action_type não for especificado
     content {
       type             = lookup(default_action.value, "action_type", "forward")
       target_group_arn = contains([null, "", "forward"], lookup(default_action.value, "action_type", "")) ? aws_lb_target_group.main[lookup(default_action.value, "target_group_index", count.index)].id : null
@@ -667,6 +684,8 @@ resource "aws_lb_listener" "frontend_https" {
 
   tags = merge(
     var.tags,
+    local.default_tags,
+    var.common_tags,
     var.https_listeners_tags,
     lookup(var.https_listeners[count.index], "tags", {}),
   )

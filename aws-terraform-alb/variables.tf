@@ -1,83 +1,83 @@
 variable "create_lb" {
-  description = "Controls if the Load Balancer should be created"
+  description = "Controla se o balanceador de carga deve ser criado"
   type        = bool
   default     = true
 }
 
 variable "drop_invalid_header_fields" {
-  description = "Indicates whether invalid header fields are dropped in application load balancers. Defaults to false."
+  description = "Indica se campos de cabeçalho inválidos são descartados em balanceadores de carga de aplicativos. O padrão é falso."
   type        = bool
   default     = false
 }
 
 variable "preserve_host_header" {
-  description = "Indicates whether Host header should be preserve and forward to targets without any change. Defaults to false."
+  description = "Indica se o cabeçalho do host deve ser preservado e encaminhado aos destinos sem qualquer alteração. O padrão é falso."
   type        = bool
   default     = false
 }
 
 variable "enable_deletion_protection" {
-  description = "If true, deletion of the load balancer will be disabled via the AWS API. This will prevent Terraform from deleting the load balancer. Defaults to false."
+  description = "Se true, a exclusão do balanceador de carga será desativada por meio da API da AWS. Isso impedirá que o Terraform exclua o balanceador de carga. O padrão é false."
   type        = bool
   default     = false
 }
 
 variable "enable_http2" {
-  description = "Indicates whether HTTP/2 is enabled in application load balancers."
+  description = "Indica se o HTTP/2 está ativado em balanceadores de carga de aplicativos."
   type        = bool
   default     = true
 }
 
 variable "enable_cross_zone_load_balancing" {
-  description = "Indicates whether cross zone load balancing should be enabled in application load balancers."
+  description = "Indica se o balanceamento de carga entre zonas deve ser ativado em balanceadores de carga de aplicativo."
   type        = bool
   default     = false
 }
 
 variable "enable_tls_version_and_cipher_suite_headers" {
-  description = "Indicates whether the two headers (x-amzn-tls-version and x-amzn-tls-cipher-suite), which contain information about the negotiated TLS version and cipher suite, are added to the client request before sending it to the target."
+  description = "Indica se os dois cabeçalhos (x-amzn-tls-version e x-amzn-tls-cipher-suite), que contêm informações sobre a versão TLS negociada e o conjunto de cifras, são adicionados à solicitação do cliente antes de enviá-la ao destino."
   type        = bool
   default     = false
 }
 
 variable "enable_xff_client_port" {
-  description = "Indicates whether the X-Forwarded-For header should preserve the source port that the client used to connect to the load balancer in application load balancers."
+  description = "Indica se o cabeçalho X-Forwarded-For deve preservar a porta de origem que o cliente usou para se conectar ao balanceador de carga em balanceadores de carga de aplicativo."
   type        = bool
   default     = true
 }
 
 variable "extra_ssl_certs" {
-  description = "A list of maps describing any extra SSL certificates to apply to the HTTPS listeners. Required key/values: certificate_arn, https_listener_index (the index of the listener within https_listeners which the cert applies toward)."
+  description = "Uma lista de mapas descrevendo quaisquer certificados SSL extras a serem aplicados aos ouvintes HTTPS. Chave/valores necessários: certificate_arn, https_listener_index (o índice do ouvinte em https_listeners ao qual o certificado se aplica)."
   type        = list(map(string))
   default     = []
 }
 
 variable "https_listeners" {
-  description = "A list of maps describing the HTTPS listeners for this ALB. Required key/values: port, certificate_arn. Optional key/values: ssl_policy (defaults to ELBSecurityPolicy-2016-08), target_group_index (defaults to https_listeners[count.index])"
+  description = "Uma lista de mapas que descrevem os listeners HTTPS para este ALB. Chave/valores necessários: porta, certificate_arn. Chave/valores opcionais: ssl_policy (o padrão é ELBSecurityPolicy-2016-08), target_group_index (o padrão é https_listeners[count.index])"
   type        = any
   default     = []
 }
 
 variable "http_tcp_listeners" {
-  description = "A list of maps describing the HTTP listeners or TCP ports for this ALB. Required key/values: port, protocol. Optional key/values: target_group_index (defaults to http_tcp_listeners[count.index])"
+  description = "Uma lista de mapas que descrevem os listeners HTTP ou portas TCP para este ALB. Chave/valores necessários: porta, protocolo. Chave/valores opcionais: target_group_index (o padrão é http_tcp_listeners[count.index])"
   type        = any
   default     = []
 }
 
 variable "https_listener_rules" {
-  description = "A list of maps describing the Listener Rules for this ALB. Required key/values: actions, conditions. Optional key/values: priority, https_listener_index (default to https_listeners[count.index])"
+  description = "Uma lista de mapas que descrevem as Regras do Ouvinte para este ALB. Chave/valores necessários: ações, condições. Chave/valores opcionais: prioridade, https_listener_index (o padrão é https_listeners[count.index])"
   type        = any
   default     = []
 }
 
 variable "http_tcp_listener_rules" {
-  description = "A list of maps describing the Listener Rules for this ALB. Required key/values: actions, conditions. Optional key/values: priority, http_tcp_listener_index (default to http_tcp_listeners[count.index])"
+  description = "Uma lista de mapas que descrevem as Regras do Ouvinte para este ALB. Chave/valores necessários: ações, condições. Chave/valores opcionais: prioridade, http_tcp_listener_index (o padrão é http_tcp_listeners[count.index])"
   type        = any
   default     = []
 }
 
 variable "idle_timeout" {
-  description = "The time in seconds that the connection is allowed to be idle."
+  description = "O tempo em segundos que a conexão pode ficar ociosa."
   type        = number
   default     = 60
 }
@@ -197,7 +197,7 @@ variable "http_tcp_listeners_tags" {
 }
 
 variable "security_groups" {
-  description = "The security groups to attach to the load balancer. e.g. [\"sg-edcd9784\",\"sg-edcd9785\"]"
+  description = "The load balancers to attach to the load balancer. e.g. [\"sg-edcd9784\",\"sg-edcd9785\"]"
   type        = list(string)
   default     = []
 }
@@ -232,54 +232,72 @@ variable "xff_header_processing_mode" {
   default     = "append"
 }
 
-variable "putin_khuylo" {
-  description = "Do you agree that Putin doesn't respect Ukrainian sovereignty and territorial integrity? More info: https://en.wikipedia.org/wiki/Putin_khuylo!"
-  type        = bool
-  default     = true
-}
 
 ################################################################################
-# Security Group
+# load balancer
 ################################################################################
 
-variable "create_security_group" {
-  description = "Determines if a security group is created"
-  type        = bool
-  default     = true
-}
+# variable "create_security_group" {
+#   description = "Determines if a load balancer is created"
+#   type        = bool
+#   default     = true
+# }
 
-variable "security_group_name" {
-  description = "Name to use on security group created"
+# variable "security_group_name" {
+#   description = "Name to use on load balancer created"
+#   type        = string
+#   default     = null
+# }
+
+# variable "security_group_use_name_prefix" {
+#   description = "Determines whether the load balancer name (`security_group_name`) is used as a prefix"
+#   type        = bool
+#   default     = true
+# }
+
+# variable "security_group_description" {
+#   description = "Description of the load balancer created"
+#   type        = string
+#   default     = null
+# }
+
+# variable "security_group_rules" {
+#   description = "load balancer rules to add to the load balancer created"
+#   type        = any
+#   default     = {}
+# }
+
+# variable "security_group_tags" {
+#   description = "A map of additional tags to add to the load balancer created"
+#   type        = map(string)
+#   default     = {}
+# }
+
+# variable "web_acl_arn" {
+#   description = "WAF ARN to associate this LB with."
+#   type        = string
+#   default     = null
+# }
+
+variable "cost_center" {
+  description = "Name tag for the load balancer."
   type        = string
-  default     = null
+  default     = "CC-SSD"
 }
 
-variable "security_group_use_name_prefix" {
-  description = "Determines whether the security group name (`security_group_name`) is used as a prefix"
-  type        = bool
-  default     = true
-}
-
-variable "security_group_description" {
-  description = "Description of the security group created"
+variable "bs" {
+  description = "Name tag for the load balancer."
   type        = string
-  default     = null
+  default     = "PGX_SUPERDIGITAL"
 }
 
-variable "security_group_rules" {
-  description = "Security group rules to add to the security group created"
-  type        = any
-  default     = {}
+variable "product" {
+  description = "Name tag for the load balancer."
+  type        = string
 }
 
-variable "security_group_tags" {
-  description = "A map of additional tags to add to the security group created"
+variable "common_tags" {
+  description = "Common tags to be applied to the load balancer."
   type        = map(string)
   default     = {}
-}
-
-variable "web_acl_arn" {
-  description = "WAF ARN to associate this LB with."
-  type        = string
-  default     = null
 }

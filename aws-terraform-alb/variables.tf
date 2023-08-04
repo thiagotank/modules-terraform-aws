@@ -83,204 +83,157 @@ variable "idle_timeout" {
 }
 
 variable "ip_address_type" {
-  description = "The type of IP addresses used by the subnets for your load balancer. The possible values are ipv4 and dualstack."
+  description = "O tipo de endereços IP usados ​​pelas sub-redes para seu balanceador de carga. Os valores possíveis são ipv4 e dualstack."
   type        = string
   default     = "ipv4"
 }
 
 variable "listener_ssl_policy_default" {
-  description = "The security policy if using HTTPS externally on the load balancer. [See](https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/elb-security-policy-table.html)."
+  description = "A política de segurança se estiver usando HTTPS externamente no balanceador de carga."
   type        = string
   default     = "ELBSecurityPolicy-2016-08"
 }
 
 variable "internal" {
-  description = "Boolean determining if the load balancer is internal or externally facing."
+  description = "Booleano determinando se o balanceador de carga está voltado para dentro ou para fora."
   type        = bool
   default     = false
 }
 
 variable "load_balancer_create_timeout" {
-  description = "Timeout value when creating the ALB."
+  description = "Valor de tempo limite ao criar o ALB."
   type        = string
   default     = "10m"
 }
 
 variable "load_balancer_delete_timeout" {
-  description = "Timeout value when deleting the ALB."
+  description = "Valor de tempo limite ao excluir o ALB."
   type        = string
   default     = "10m"
 }
 
 variable "name" {
-  description = "The resource name and Name tag of the load balancer."
+  description = "O nome do recurso e a tag de nome do balanceador de carga."
   type        = string
   default     = null
 }
 
 variable "name_prefix" {
-  description = "The resource name prefix and Name tag of the load balancer. Cannot be longer than 6 characters"
+  description = "O prefixo do nome do recurso e a marca de nome do balanceador de carga. Não pode ter mais de 6 caractere"
   type        = string
   default     = null
 }
 
 variable "load_balancer_type" {
-  description = "The type of load balancer to create. Possible values are application or network."
+  description = "O tipo de balanceador de carga a ser criado. Os valores possíveis são aplicativo ou rede."
   type        = string
   default     = "application"
 }
 
 variable "load_balancer_update_timeout" {
-  description = "Timeout value when updating the ALB."
+  description = "Valor de tempo limite ao atualizar o ALB"
   type        = string
   default     = "10m"
 }
 
 variable "access_logs" {
-  description = "Map containing access logging configuration for load balancer."
+  description = "Mapa contendo configuração de registro de acesso para balanceador de carga."
   type        = map(string)
   default     = {}
 }
 
 variable "subnets" {
-  description = "A list of subnets to associate with the load balancer. e.g. ['subnet-1a2b3c4d','subnet-1a2b3c4e','subnet-1a2b3c4f']"
+  description = "Uma lista de sub-redes para associar ao balanceador de carga"
   type        = list(string)
   default     = null
 }
 
 variable "subnet_mapping" {
-  description = "A list of subnet mapping blocks describing subnets to attach to network load balancer"
+  description = "Uma lista de blocos de mapeamento de sub-rede descrevendo sub-redes para anexar ao balanceador de carga de rede"
   type        = list(map(string))
   default     = []
 }
 
 variable "tags" {
-  description = "A map of tags to add to all resources"
+  description = "Um mapa de tags para adicionar a todos os recursos"
   type        = map(string)
   default     = {}
 }
 
 variable "lb_tags" {
-  description = "A map of tags to add to load balancer"
+  description = "Um mapa de tags para adicionar ao balanceador de carga"
   type        = map(string)
   default     = {}
 }
 
 variable "target_group_tags" {
-  description = "A map of tags to add to all target groups"
+  description = "Um mapa de tags para adicionar a todos os grupos-alvo"
   type        = map(string)
   default     = {}
 }
 
 variable "https_listener_rules_tags" {
-  description = "A map of tags to add to all https listener rules"
+  description = "Um mapa de tags para adicionar a todas as regras de ouvinte https"
   type        = map(string)
   default     = {}
 }
 
 variable "http_tcp_listener_rules_tags" {
-  description = "A map of tags to add to all http listener rules"
+  description = "Um mapa de tags para adicionar a todas as regras do ouvinte http"
   type        = map(string)
   default     = {}
 }
 
 variable "https_listeners_tags" {
-  description = "A map of tags to add to all https listeners"
+  description = "Um mapa de tags para adicionar a todos os ouvintes https"
   type        = map(string)
   default     = {}
 }
 
 variable "http_tcp_listeners_tags" {
-  description = "A map of tags to add to all http listeners"
+  description = "Um mapa de tags para adicionar a todos os ouvintes https"
   type        = map(string)
   default     = {}
 }
 
 variable "security_groups" {
-  description = "The load balancers to attach to the load balancer. e.g. [\"sg-edcd9784\",\"sg-edcd9785\"]"
+  description = "Os balanceadores de carga a serem anexados ao balanceador de carga. por exemplo. [\"sg-edcd9784\",\"sg-edcd9785\"]"
   type        = list(string)
   default     = []
 }
 
 variable "target_groups" {
-  description = "A list of maps containing key/value pairs that define the target groups to be created. Order of these maps is important and the index of these are to be referenced in listener definitions. Required key/values: name, backend_protocol, backend_port"
+  description = "Uma lista de mapas contendo pares chave/valor que definem os grupos de destino a serem criados. A ordem desses mapas é importante e o índice deles deve ser referenciado nas definições do ouvinte. Chave/valores necessários: nome, backend_protocol, backend_port"
   type        = any
   default     = []
 }
 
 variable "vpc_id" {
-  description = "VPC id where the load balancer and other resources will be deployed."
+  description = "ID da VPC em que o balanceador de carga e outros recursos serão implantados."
   type        = string
   default     = null
 }
 
 variable "enable_waf_fail_open" {
-  description = "Indicates whether to route requests to targets if lb fails to forward the request to AWS WAF"
+  description = "Indica se deve encaminhar solicitações para destinos se lb falhar ao encaminhar a solicitação para o AWS WAF"
   type        = bool
   default     = false
 }
 
 variable "desync_mitigation_mode" {
-  description = "Determines how the load balancer handles requests that might pose a security risk to an application due to HTTP desync."
+  description = "Determina como o balanceador de carga lida com solicitações que podem representar um risco de segurança para um aplicativo devido à dessincronização de HTTP."
   type        = string
   default     = "defensive"
 }
 
 variable "xff_header_processing_mode" {
-  description = "Determines how the load balancer modifies the X-Forwarded-For header in the HTTP request before sending the request to the target."
+  description = "Determina como o balanceador de carga modifica o cabeçalho X-Forwarded-For na solicitação HTTP antes de enviar a solicitação ao destino."
   type        = string
   default     = "append"
 }
 
-
-################################################################################
-# load balancer
-################################################################################
-
-# variable "create_security_group" {
-#   description = "Determines if a load balancer is created"
-#   type        = bool
-#   default     = true
-# }
-
-# variable "security_group_name" {
-#   description = "Name to use on load balancer created"
-#   type        = string
-#   default     = null
-# }
-
-# variable "security_group_use_name_prefix" {
-#   description = "Determines whether the load balancer name (`security_group_name`) is used as a prefix"
-#   type        = bool
-#   default     = true
-# }
-
-# variable "security_group_description" {
-#   description = "Description of the load balancer created"
-#   type        = string
-#   default     = null
-# }
-
-# variable "security_group_rules" {
-#   description = "load balancer rules to add to the load balancer created"
-#   type        = any
-#   default     = {}
-# }
-
-# variable "security_group_tags" {
-#   description = "A map of additional tags to add to the load balancer created"
-#   type        = map(string)
-#   default     = {}
-# }
-
-# variable "web_acl_arn" {
-#   description = "WAF ARN to associate this LB with."
-#   type        = string
-#   default     = null
-# }
-
 variable "cost_center" {
-  description = "Name tag for the load balancer."
+  description = "Determina a tag do centro de custo para o loadbalancer."
   type        = string
   default     = "CC-SSD"
 }
@@ -292,12 +245,12 @@ variable "bs" {
 }
 
 variable "product" {
-  description = "Name tag for the load balancer."
+  description = "Determina a tag do produto, description e aplication para o loadbalancer."
   type        = string
 }
 
 variable "common_tags" {
-  description = "Common tags to be applied to the load balancer."
+  description = "Tags comuns a serem aplicadas ao balanceador de carga."
   type        = map(string)
   default     = {}
 }

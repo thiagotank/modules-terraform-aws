@@ -29,7 +29,6 @@ resource "aws_lb" "this" {
   load_balancer_type = var.load_balancer_type
   internal           = var.internal
   security_groups    = var.security_groups
-  # security_groups    = var.create_security_group && var.load_balancer_type == "application" ? concat([aws_security_group.this[0].id], var.security_groups) : var.security_groups
   subnets            = var.subnets
 
   idle_timeout                                = var.idle_timeout
@@ -140,7 +139,8 @@ resource "aws_lb_target_group" "main" {
     var.common_tags,
     lookup(var.target_groups[count.index], "tags", {}),
     {
-      "Name" = try(var.target_groups[count.index].name, var.target_groups[count.index].name_prefix, "")
+      # "Name" = try(var.target_groups[count.index].name, var.target_groups[count.index].name_prefix, "")
+      "Name" = try(var.name[count.index].name, var.name_prefix[count.index].name_prefix, "")
     },
   )
 
@@ -150,12 +150,6 @@ resource "aws_lb_target_group" "main" {
 }
 
 locals {
-  # Merge the target group index into a product map of the targets so we
-  # can figure out what target group we should attach each target to.
-  # Target indexes can be dynamically defined, but need to match
-  # the function argument reference. This means any additional arguments
-  # can be added later and only need to be updated in the attachment resource below.
-  # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb_target_group_attachment#argument-reference
   target_group_attachments = merge(flatten([
     for index, group in var.target_groups : [
       for k, targets in group : {
@@ -697,56 +691,3 @@ resource "aws_lb_listener_certificate" "https_listener" {
   listener_arn    = aws_lb_listener.frontend_https[var.extra_ssl_certs[count.index]["https_listener_index"]].arn
   certificate_arn = var.extra_ssl_certs[count.index]["certificate_arn"]
 }
-
-################################################################################
-# Security Group
-################################################################################
-
-# locals {
-#   create_security_group = local.create_lb && var.create_security_group && var.load_balancer_type == "application"
-#   security_group_name   = try(coalesce(var.security_group_name, var.name, var.name_prefix), "")
-# }
-
-# resource "aws_security_group" "this" {
-#   count = local.create_security_group ? 1 : 0
-
-#   name        = var.security_group_use_name_prefix ? null : local.security_group_name
-#   name_prefix = var.security_group_use_name_prefix ? "${local.security_group_name}-" : null
-#   description = var.security_group_description
-#   vpc_id      = var.vpc_id
-
-#   tags = merge(
-#     var.tags,
-#     var.security_group_tags,
-#     { "Name" = local.security_group_name },
-#   )
-
-#   lifecycle {
-#     create_before_destroy = true
-#   }
-# }
-
-# resource "aws_security_group_rule" "this" {
-#   for_each = { for k, v in var.security_group_rules : k => v if local.create_security_group }
-
-#   # Required
-#   security_group_id = aws_security_group.this[0].id
-#   protocol          = each.value.protocol
-#   from_port         = each.value.from_port
-#   to_port           = each.value.to_port
-#   type              = each.value.type
-
-#   # Optional
-#   description              = lookup(each.value, "description", null)
-#   cidr_blocks              = lookup(each.value, "cidr_blocks", null)
-#   ipv6_cidr_blocks         = lookup(each.value, "ipv6_cidr_blocks", null)
-#   prefix_list_ids          = lookup(each.value, "prefix_list_ids", null)
-#   self                     = lookup(each.value, "self", null)
-#   source_security_group_id = lookup(each.value, "source_security_group_id", null)
-# }
-
-# resource "aws_wafv2_web_acl_association" "this" {
-#   count        = var.web_acl_arn != null ? 1 : 0
-#   resource_arn = aws_lb.this[0].arn
-#   web_acl_arn  = var.web_acl_arn
-# }

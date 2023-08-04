@@ -8,6 +8,7 @@ locals {
 
   product_name = "monito"
   vpc_id       = "vpc-0721729cf29699773"
+  subnets      =  ["subnet-0d7234146c0c0cd1c", "subnet-0470f8d42c1062dc0"]
 }
 
 # Modulo security group
@@ -46,7 +47,7 @@ module "alb" {
   load_balancer_type = "application"
   internal           = "true"
   vpc_id             = local.vpc_id
-  subnets            = ["subnet-0d7234146c0c0cd1c", "subnet-0470f8d42c1062dc0"]
+  subnets            = local.subnets
   security_groups    = module.sg.security_group_ids
   common_tags        = local.common_tags
 
@@ -97,11 +98,6 @@ module "alb" {
       actions = [{
         type               = "forward"
         target_group_index = 1
-        # status_code = "HTTP_302"
-        # host        = "www.youtube.com"
-        # path        = "/watch"
-        # query       = "v=dQw4w9WgXcQ"
-        # protocol    = "HTTPS"
       }]
 
       conditions = [{
@@ -135,20 +131,6 @@ module "alb" {
       }]
     },
   ]
-
-  # http_tcp_listeners = [
-  #   {
-  #     port        = 80
-  #     protocol    = "HTTP"
-  #     action_type = "redirect"
-  #     redirect = {
-  #       port        = "443"
-  #       protocol    = "HTTPS"
-  #       status_code = "HTTP_301"
-  #     }
-  #   }
-  # ]
-
   # tags = {
   #   Environment = "Test"
   # }

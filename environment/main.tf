@@ -7,15 +7,15 @@ locals {
   }
 
   product_name = "monito"
-  vpc_id       = "vpc-0721729cf29699773"
-  subnets      =  ["subnet-0d7234146c0c0cd1c", "subnet-0470f8d42c1062dc0"]
+  vpc_id       = "vpc-XXXX"
+  subnets      = ["subnet-XXXX", "subnet-XXXX"]
 }
 
 # Modulo security group
 module "sg" {
   source = "./../aws-terraform-sg"
 
-  name        = "Superdigital"
+  name        = "supeXXXX"
   vpc_id      = local.vpc_id
   product     = local.product_name
   common_tags = local.common_tags
@@ -42,7 +42,7 @@ module "sg" {
 module "alb" {
   source = "./../aws-terraform-alb"
 
-  name               = "Superdigital"
+  name               = "superdigital"
   product            = local.product_name
   load_balancer_type = "application"
   internal           = "true"
@@ -53,26 +53,26 @@ module "alb" {
 
   target_groups = [
     {
-      name_prefix      = "tg-01-"
+      name_prefix      = "tg00"
       backend_protocol = "HTTPS"
       backend_port     = 443
       target_type      = "instance"
       targets = {
         my_target = {
-          target_id = "i-0222ae6aa7a442d4d"
+          target_id = "i-XXXX"
           port      = 80
         }
       }
     },
 
     {
-      name_prefix      = "tg-02-"
+      name_prefix      = "tg01"
       backend_protocol = "HTTPS"
       backend_port     = 443
       target_type      = "instance"
       targets = {
         my_target = {
-          target_id = "i-0222ae6aa7a442d4d"
+          target_id = "i-XXXX"
           port      = 80
         }
       }
@@ -83,7 +83,7 @@ module "alb" {
     {
       port            = 443
       protocol        = "HTTPS"
-      certificate_arn = "arn:aws:acm:us-east-1:375672701339:certificate/14143223-f8f7-47d8-a41d-1e76772d3076"
+      certificate_arn = "arn:aws:acm:us-XXXX"
 
       target_group_index = 0
     }
@@ -101,7 +101,7 @@ module "alb" {
       }]
 
       conditions = [{
-        path_patterns = ["producao.superdigital.com.br"]
+        path_patterns = ["producao.XXXX.com.br"]
       }]
 
     },
@@ -114,7 +114,7 @@ module "alb" {
         target_group_index = 0
       }]
       conditions = [{
-        path_patterns = ["teste.superdigital.com.br/*"]
+        path_patterns = ["teste.XXXX.com.br/*"]
       }]
     },
 
@@ -127,11 +127,8 @@ module "alb" {
         target_group_index = 0
       }]
       conditions = [{
-        path_patterns = ["pj.superdigital.com.br/*"]
+        path_patterns = ["pj.XXXX.com.br/*"]
       }]
     },
   ]
-  # tags = {
-  #   Environment = "Test"
-  # }
 }

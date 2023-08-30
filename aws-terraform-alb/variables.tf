@@ -52,12 +52,6 @@ variable "extra_ssl_certs" {
   default     = []
 }
 
-variable "https_listeners" {
-  description = "Uma lista de mapas que descrevem os listeners HTTPS para este ALB. Chave/valores necessários: porta, certificate_arn. Chave/valores opcionais: ssl_policy (o padrão é ELBSecurityPolicy-2016-08), target_group_index (o padrão é https_listeners[count.index])"
-  type        = any
-  default     = []
-}
-
 variable "http_tcp_listeners" {
   description = "Uma lista de mapas que descrevem os listeners HTTP ou portas TCP para este ALB. Chave/valores necessários: porta, protocolo. Chave/valores opcionais: target_group_index (o padrão é http_tcp_listeners[count.index])"
   type        = any
@@ -202,12 +196,6 @@ variable "security_groups" {
   default     = []
 }
 
-variable "target_groups" {
-  description = "Uma lista de mapas contendo pares chave/valor que definem os grupos de destino a serem criados. A ordem desses mapas é importante e o índice deles deve ser referenciado nas definições do ouvinte. Chave/valores necessários: nome, backend_protocol, backend_port"
-  type        = any
-  default     = []
-}
-
 variable "vpc_id" {
   description = "ID da VPC em que o balanceador de carga e outros recursos serão implantados."
   type        = string
@@ -253,4 +241,28 @@ variable "common_tags" {
   description = "Tags comuns a serem aplicadas ao balanceador de carga."
   type        = map(string)
   default     = {}
+}
+
+variable "target_groups" {
+  description = "List of target groups"
+  type = list(object({
+    name_prefix      = string
+    backend_protocol = string
+    backend_port     = number
+    target_type      = string
+    targets = map(object({
+      target_id = string
+      port      = number
+    }))
+  }))
+}
+
+variable "https_listeners" {
+  description = "List of HTTPS listeners"
+  type = list(object({
+    port               = number
+    protocol           = string
+    certificate_arn    = string
+    target_group_index = number
+  }))
 }

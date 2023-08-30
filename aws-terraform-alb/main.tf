@@ -11,9 +11,9 @@ terraform {
 
 
 locals {
-  create_lb = var.create_lb 
-    default_tags = {
-    product = var.product
+  create_lb = var.create_lb
+  default_tags = {
+    product     = var.product
     description = var.product
     application = var.product
     cost_center = var.cost_center
@@ -24,8 +24,11 @@ locals {
 # Application LoadBalancer
 ################################################################################
 resource "aws_lb" "this" {
-  count = local.create_lb ? 1 : 0
+  count       = local.create_lb ? 1 : 0
   name        = var.name
+  name_prefix = var.name_prefix
+
+
   load_balancer_type = var.load_balancer_type
   internal           = var.internal
   security_groups    = var.security_groups
@@ -67,7 +70,7 @@ resource "aws_lb" "this" {
 
   tags = merge(
     {
-      Name = var.name, 
+      Name = var.name,
     },
     var.tags,
     var.lb_tags,
@@ -83,12 +86,8 @@ resource "aws_lb" "this" {
 }
 
 resource "aws_lb_target_group" "main" {
-  count = local.create_lb ? length(var.target_groups) : 0
-
-  name        = lookup(var.target_groups[count.index], "name", null)
-  name_prefix = lookup(var.target_groups[count.index], "name_prefix", null)
-  # name          = var.name
-
+  count            = local.create_lb ? length(var.target_groups) : 0
+  name             = "${var.name}-${lookup(var.target_groups[count.index], "name_prefix", "")}"
   vpc_id           = var.vpc_id
   port             = try(var.target_groups[count.index].backend_port, null)
   protocol         = try(upper(var.target_groups[count.index].backend_protocol), null)
@@ -140,7 +139,8 @@ resource "aws_lb_target_group" "main" {
     lookup(var.target_groups[count.index], "tags", {}),
     {
       # "Name" = try(var.target_groups[count.index].name, var.target_groups[count.index].name_prefix, "")
-      "Name" = try(var.name[count.index].name, var.name_prefix[count.index].name_prefix, "")
+      # "Name" = try(var.name[count.index].name, var.name_prefix[count.index].name_prefix, "")
+      name = "${lookup(var.target_groups[count.index], "name_prefix", "")}${lookup(var.target_groups[count.index], "name", "")}"
     },
   )
 

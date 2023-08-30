@@ -203,9 +203,17 @@ variable "security_groups" {
 }
 
 variable "target_groups" {
-  description = "Uma lista de mapas contendo pares chave/valor que definem os grupos de destino a serem criados. A ordem desses mapas é importante e o índice deles deve ser referenciado nas definições do ouvinte. Chave/valores necessários: nome, backend_protocol, backend_port"
-  type        = any
-  default     = []
+  description = "List of target groups"
+  type = list(object({
+    name_prefix      = string
+    backend_protocol = string
+    backend_port     = number
+    target_type      = string
+    targets = map(object({
+      target_id = string
+      port      = number
+    }))
+  }))
 }
 
 variable "vpc_id" {
@@ -260,3 +268,29 @@ variable "common_tags" {
   default     = {}
 }
 
+
+variable "cia" {
+  description = "Determina a tag do produto, description e aplication para o loadbalancer."
+  type        = string
+}
+
+variable "ts" {
+  description = "Determina a tag do produto, description e aplication para o loadbalancer."
+  type        = string
+}
+
+variable "tracking_code" {
+  description = "Determina a tag do produto, description e aplication para o loadbalancer."
+  type        = string
+}
+
+variable "ingress_rules" {
+  description = "Variavel necessaria caso esteja utilizando o modulo de grupo de segurança junto"
+  type = list(object({
+    from_port   = number
+    to_port     = number
+    protocol    = string
+    cidr_blocks = list(string)
+    description = string
+  }))
+}

@@ -104,6 +104,7 @@ resource "aws_lb_target_group" "main" {
   ip_address_type                    = try(var.target_groups[count.index].ip_address_type, null)
   load_balancing_cross_zone_enabled  = try(var.target_groups[count.index].load_balancing_cross_zone_enabled, null)
 
+
   dynamic "health_check" {
     for_each = try([var.target_groups[count.index].health_check], [])
 
@@ -119,6 +120,7 @@ resource "aws_lb_target_group" "main" {
       matcher             = try(health_check.value.matcher, null)
     }
   }
+  
 
   dynamic "stickiness" {
     for_each = try([var.target_groups[count.index].stickiness], [])
@@ -158,6 +160,15 @@ locals {
       if k == "targets"
     ]
   ])...)
+}
+
+resource "aws_lb_target_group_attachment" "this" {
+  for_each = { for k, v in local.target_group_attachments : k => v if local.create_lb }
+
+  target_group_arn  = aws_lb_target_group.main[each.value.tg_index].arn
+  target_id         = each.value.target_id
+  port              = lookup(each.value, "port", null)
+  availability_zone = lookup(each.value, "availability_zone", null)
 }
 
 resource "aws_lb_listener_rule" "https_listener_rule" {

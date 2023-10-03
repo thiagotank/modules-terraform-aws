@@ -1,6 +1,6 @@
 # Módulo AWS Application Load Balancer (ALB)
 
-Este módulo Terraform implanta um AWS Application Load Balancer (ALB) juntamente com grupos de destino e listeners associados. Ele fornece uma maneira fácil de criar recursos ALB com configurações específicas.
+Este módulo Terraform implanta um AWS Application Load Balancer (ALB) juntamente com grupos de destino e listeners associados. Ele fornece uma maneira fácil de criar recursos ALB com configurações específicas. Os valores para consumir o modulo de security podem ser necessarios e serão fornecidos um exemplo de criação de regras de entrada
 
 # Pré-requisitos
 Versão do Terraform >= 0.12.x
